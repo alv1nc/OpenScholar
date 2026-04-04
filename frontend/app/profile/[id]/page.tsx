@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Mail, Building, GraduationCap, MapPin } from 'lucide-react';
+import { Mail, Building, GraduationCap, MapPin, X, Loader2 } from 'lucide-react';
 import { PaperCard, Paper } from '@/components/PaperCard';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 
-// Reusing MockData layout for types temporarily
 interface UserProfile {
   id: string;
   name: string;
@@ -16,14 +15,25 @@ interface UserProfile {
   department: string;
 }
 
+interface EditForm {
+  name: string;
+  department: string;
+}
+
 export default function ProfilePage() {
   const { id } = useParams() as { id: string };
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, updateUser } = useAuth();
   const router = useRouter();
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [userPapers, setUserPapers] = useState<Paper[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Edit modal state
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState<EditForm>({ name: '', department: '' });
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -35,10 +45,8 @@ export default function ProfilePage() {
           setProfile(userRes.data.user);
         }
 
-        // Fetch their papers
-        const res = await api.get('/papers/recent'); // Mock endpoint to get papers
+        const res = await api.get('/papers/recent');
         setUserPapers(res.data.papers.slice(0, 2));
-
       } catch (err) {
         console.error(err);
       } finally {
@@ -47,6 +55,38 @@ export default function ProfilePage() {
     };
     fetchProfileData();
   }, [id, currentUser]);
+
+  const handleOpenEdit = () => {
+    if (!profile) return;
+    setEditForm({ name: profile.name, department: profile.department || '' });
+    setSaveError(null);
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!profile) return;
+    if (!editForm.name.trim()) {
+      setSaveError('Name cannot be empty.');
+      return;
+    }
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      const res = await api.patch(`/users/${profile.id}`, {
+        name: editForm.name.trim(),
+        department: editForm.department.trim(),
+      });
+      const updated = res.data.user as UserProfile;
+      setProfile(updated);
+      // Sync the in-memory auth session so navbar etc. update immediately
+      updateUser({ name: updated.name, department: updated.department });
+      setIsEditOpen(false);
+    } catch (err: any) {
+      setSaveError(err?.response?.data?.message || 'Failed to save changes. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleMessage = async () => {
     try {
@@ -89,7 +129,10 @@ export default function ProfilePage() {
 
           <div className="pt-2 flex gap-3 justify-center sm:justify-start">
             {isOwnProfile ? (
-              <button className="px-5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-md font-medium transition-colors border border-border shadow-sm">
+              <button
+                onClick={handleOpenEdit}
+                className="px-5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-md font-medium transition-colors border border-border shadow-sm"
+              >
                 Edit Profile
               </button>
             ) : (
@@ -126,6 +169,80 @@ export default function ProfilePage() {
         )}
       </div>
 
+      {/* Edit Profile Modal */}
+      {isEditOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-zinc-900 border border-border rounded-2xl w-full max-w-md shadow-2xl">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-lg font-semibold text-white">Edit Profile</h2>
+              <button
+                onClick={() => setIsEditOpen(false)}
+                className="text-zinc-400 hover:text-white transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-zinc-300" htmlFor="edit-name">
+                  Full Name
+                </label>
+                <input
+                  id="edit-name"
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-border rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  placeholder="Your full name"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-zinc-300" htmlFor="edit-department">
+                  Department
+                </label>
+                <input
+                  id="edit-department"
+                  type="text"
+                  value={editForm.department}
+                  onChange={(e) => setEditForm((f) => ({ ...f, department: e.target.value }))}
+                  className="w-full px-4 py-2.5 bg-zinc-800 border border-border rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  placeholder="e.g. Computer Science"
+                />
+              </div>
+
+              {saveError && (
+                <p className="text-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-2.5">
+                  {saveError}
+                </p>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 pb-6">
+              <button
+                onClick={() => setIsEditOpen(false)}
+                disabled={isSaving}
+                className="px-5 py-2 text-sm font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-lg border border-border transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={isSaving}
+                className="px-5 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-lg transition-colors disabled:opacity-60 flex items-center gap-2"
+              >
+                {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isSaving ? 'Saving…' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
