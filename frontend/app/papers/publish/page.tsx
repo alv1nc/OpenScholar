@@ -58,9 +58,8 @@ export default function PublishPaperPage() {
       formData.append('doi', data.doi || '');
       formData.append('file', selectedFile);
 
-      const res = await api.post('/papers', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      // Axios will natively detect FormData and inject the multipart boundary tag on its own.
+      const res = await api.post('/papers', formData);
       
       router.push(`/papers/${res.data.paper.id}`);
     } catch (err) {

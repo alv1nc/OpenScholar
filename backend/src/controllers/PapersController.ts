@@ -51,7 +51,7 @@ export class PapersController {
 
       // Extract filename from stored "/uploads/123.pdf" string
       const filename = data.paper.pdfUrl.split('/').pop();
-      const filePath = path.join(__dirname, '../../uploads', filename as string);
+      const filePath = path.join(process.cwd(), 'uploads', filename as string);
 
       if (!fs.existsSync(filePath)) {
         return res.status(404).json({ message: 'Source file could not be located on the server filesystem' });

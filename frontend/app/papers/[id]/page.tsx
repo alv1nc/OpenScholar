@@ -42,18 +42,24 @@ export default function PaperDetailPage() {
 
   const handleDownload = async () => {
     try {
-      // Direct raw binary stream fetch relying on the Authorization Header
       const res = await api.get(`/papers/${id}/pdf`, { responseType: 'blob' });
       
-      // Construct a secure local browser URL from the raw memory payload
       const fileBlob = new Blob([res.data], { type: 'application/pdf' });
       const fileURL = URL.createObjectURL(fileBlob);
       
-      // Launch native browser PDF viewer instantly
-      window.open(fileURL, '_blank');
+      // Force an actual disk download instead of opening a 'blob:' page which can be blocked
+      const link = document.createElement('a');
+      link.href = fileURL;
+      link.setAttribute('download', `${paper?.title?.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'paper'}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      URL.revokeObjectURL(fileURL);
     } catch (err) {
       console.error("Failed to download PDF:", err);
-      // alert("Error downloading PDF file");
+      alert("Failed to securely download the PDF. Make sure the file exists on the server.");
     }
   };
 
