@@ -42,10 +42,18 @@ export default function PaperDetailPage() {
 
   const handleDownload = async () => {
     try {
-      const res = await api.get(`/papers/${id}/pdf`);
-      alert(res.data.message); // Mock download behavior
+      // Direct raw binary stream fetch relying on the Authorization Header
+      const res = await api.get(`/papers/${id}/pdf`, { responseType: 'blob' });
+      
+      // Construct a secure local browser URL from the raw memory payload
+      const fileBlob = new Blob([res.data], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(fileBlob);
+      
+      // Launch native browser PDF viewer instantly
+      window.open(fileURL, '_blank');
     } catch (err) {
-      console.error(err);
+      console.error("Failed to download PDF:", err);
+      // alert("Error downloading PDF file");
     }
   };
 
@@ -120,24 +128,18 @@ export default function PaperDetailPage() {
         </p>
       </div>
 
-      {/* Citation Graph Placeholder */}
+      {/* Citation Details Placeholder */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-zinc-900 border border-border rounded-2xl p-8">
-          <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            Papers this cites
+          <h2 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+            Citation Network
           </h2>
-          <ul className="space-y-3">
-            <li className="text-muted-foreground hover:text-primary cursor-pointer truncate">• Foundation of Quantum Mechanics</li>
-            <li className="text-muted-foreground hover:text-primary cursor-pointer truncate">• An Analysis of RSA Dependencies</li>
-          </ul>
-        </div>
-        <div className="bg-zinc-900 border border-border rounded-2xl p-8">
-          <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            Papers citing this
-          </h2>
-          <ul className="space-y-3">
-            <li className="text-muted-foreground hover:text-primary cursor-pointer truncate">• Post-Quantum Protocols for Web Servers</li>
-          </ul>
+          <p className="text-muted-foreground text-sm mb-4">
+            Total citations accumulated: <strong className="text-primary">{paper.citationCount}</strong>
+          </p>
+          <p className="text-xs text-muted-foreground italic border-t border-border pt-4 mt-4">
+            Interactive citation mapping is arriving in a future update once the graph database is strictly localized.
+          </p>
         </div>
       </div>
 

@@ -10,7 +10,7 @@ export const setAccessToken = (token: string | null) => {
 export const getAccessToken = () => accessToken;
 
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api/v1',
   withCredentials: true, // Needed if we were actually sending httpOnly cookies
 });
 
@@ -28,18 +28,18 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
+
     // If the error is 401 and we haven't already retried
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        // Attempt to refresh the token
-        const resp = await axios.post('/api/v1/auth/refresh', {}, { withCredentials: true });
+        // Attempt to refresh the token using the dynamic baseURL
+        const resp = await axios.post(`${api.defaults.baseURL}/auth/refresh`, {}, { withCredentials: true });
         const newToken = resp.data.accessToken; // Mocked API should return `{ accessToken: "..." }`
-        
+
         // Save new token in memory
         setAccessToken(newToken);
-        
+
         // Update the failed request header and retry
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
@@ -54,7 +54,7 @@ api.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );

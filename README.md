@@ -13,7 +13,13 @@ A localized, institute-centric academic research platform where university membe
 
 ## Architecture
 
-This repository currently houses the `frontend/` application. A dedicated backend will be constructed separately using Node.js/Express + PostgreSQL.
+This repository uses a strict decoupled infrastructure.
+
+### Backend
+- **Core:** Node.js + Express (TypeScript)
+- **Database:** PostgreSQL managed via Prisma ORM
+- **Object Storage:** Pure native local filesystem (`/uploads`) for PDF streaming
+- **Security:** Dual JWT (Access Tokens) + HTTP-Only browser cookies (Refresh Tokens)
 
 ### Frontend
 - **Framework:** Next.js 14 (App Router)
@@ -22,21 +28,55 @@ This repository currently houses the `frontend/` application. A dedicated backen
 - **Icons:** Lucide React
 - **Network Interface:** Axios
 
-*Note: As the backend is under development, the frontend securely mocks RESTful JSON responses using Next.js API Routes (`/api/v1/...`) mimicking the standard PostgreSQL architecture.*
+*Note: The frontend leverages `.env.local` to securely point to the local backend using `NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1`.*
 
 ## Getting Started
 
-1. Navigate to the frontend directory:
+To run this application natively on a fresh device, you must boot both the Backend API and the Frontend Client.
+
+### 1. Database Setup
+Ensure you have a live **PostgreSQL** instance actively running locally.
+
+### 2. Booting the Backend
+1. Navigate to the backend directory:
    ```bash
-   cd frontend
+   cd backend
    ```
-2. Install dependencies:
+2. Install NodeJS dependencies:
    ```bash
    npm install
    ```
-3. Start the development server:
+3. Initialize the Prisma configuration:
+   Create a `.env` file containing your Postgres connection string:
+   `DATABASE_URL="postgresql://user:password@localhost:5432/openscholar?schema=public"`
+4. Push the schema to generate SQL tables:
+   ```bash
+   npx prisma db push
+   npx prisma generate
+   ```
+5. Compile TypeScript and Start the Server:
+   ```bash
+   npx tsc
+   node dist/index.js
+   ```
+*The backend will boot up tightly on `http://localhost:5000/api/v1`.*
+
+### 3. Booting the Frontend
+1. Open a new discrete terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Ensure you create a `.env.local` file pointing to your new backend:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+   ```
+3. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the Next.js process:
    ```bash
    npm run dev
    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. The root navigates automatically to the protected `/dashboard` layout.
+Navigate to **[http://localhost:3000](http://localhost:3000)** and register your first account!

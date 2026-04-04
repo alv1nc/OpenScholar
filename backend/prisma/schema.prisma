@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
+  passwordHash  String
+  name          String
+  role          Role
+  department    String?
+  isVerified    Boolean  @default(false)
+  papers        Paper[]
+  comments      Comment[]
+  conversationsAsA Conversation[] @relation("ConversationParticipantA")
+  conversationsAsB Conversation[] @relation("ConversationParticipantB")
+  messagesSent  Message[] @relation("MessageSender")
+  messagesRecv  Message[] @relation("MessageRecipient")
+}
+
+enum Role {
+  student
+  faculty
+  admin
+}
+
+model Paper {
+  id            String   @id @default(uuid()) @db.Uuid
+  uploadedBy    String   @db.Uuid
+  user          User     @relation(fields: [uploadedBy], references: [id])
+  title         String
+  abstract      String
+  authors       String[]
+  keywords      String[]
+  year          Int
+  department    String?
+  pdfUrl        String?
+  citationCount Int      @default(0)
+  doi           String?
+  
+  citations     Citation[] @relation("citedPaper")
+  citedBy       Citation[] @relation("citingPaper")
+  comments      Comment[]
+}
+
+model Citation {
+  citingPaperId String @db.Uuid
+  citedPaperId  String @db.Uuid
+  citing        Paper  @relation("citingPaper", fields: [citingPaperId], references: [id])
+  cited         Paper  @relation("citedPaper", fields: [citedPaperId], references: [id])
+
+  @@id([citingPaperId, citedPaperId])
+}
+
+model Comment {
+  id              String   @id @default(uuid()) @db.Uuid
+  paperId         String   @db.Uuid
+  paper           Paper    @relation(fields: [paperId], references: [id])
+  userId          String   @db.Uuid
+  user            User     @relation(fields: [userId], references: [id])
+  parentCommentId String?  @db.Uuid
+  parent          Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies         Comment[] @relation("CommentReplies")
+  content         String
+  isDeleted       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+}
+
+model Conversation {
+  id              String   @id @default(uuid()) @db.Uuid
+  participantA    String   @db.Uuid
+  userA           User     @relation("ConversationParticipantA", fields: [participantA], references: [id])
+  participantB    String   @db.Uuid
+  userB           User     @relation("ConversationParticipantB", fields: [participantB], references: [id])
+  updatedAt       DateTime @default(now()) @updatedAt
+  messages        Message[]
+
+  @@unique([participantA, participantB])
+}
+
+model Message {
+  id              String   @id @default(uuid()) @db.Uuid
+  conversationId  String   @db.Uuid
+  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  senderId        String   @db.Uuid
+  sender          User     @relation("MessageSender", fields: [senderId], references: [id])
+  recipientId     String   @db.Uuid
+  recipient       User     @relation("MessageRecipient", fields: [recipientId], references: [id])
+  text            String
+  isRead          Boolean  @default(false)
+  createdAt       DateTime @default(now())
+}
