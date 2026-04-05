@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Send, User as UserIcon, MessageSquare } from 'lucide-react';
+import { Send, User as UserIcon, MessageSquare, Search, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 
@@ -43,6 +43,11 @@ function MessagesContent() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   
+  // Search state
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch list of conversations
@@ -54,6 +59,46 @@ function MessagesContent() {
       }
     }).catch(console.error);
   }, [activeConvId]);
+
+  // Search Debouncer
+  useEffect(() => {
+    if (searchQuery.trim().length === 0) {
+      setSearchResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await api.get(`/users/search/query?q=${encodeURIComponent(searchQuery)}`);
+        // Filter out self
+        setSearchResults(res.data.users.filter((u: any) => u.id !== user?.id));
+      } catch (err) {
+        console.error(err);
+      }
+    }, 400); // 400ms debounce
+    return () => clearTimeout(timer);
+  }, [searchQuery, user]);
+
+  const handleStartChat = async (targetUserId: string) => {
+    try {
+      const res = await api.post('/conversations', { userId: targetUserId });
+      const newConv = res.data.conversation;
+      
+      // Prevent undefined crash by ensuring the new conversation exists in the array
+      setConversations(prev => {
+        if (!prev.find(c => c.id === newConv.id)) {
+          return [newConv, ...prev];
+        }
+        return prev;
+      });
+      
+      setActiveConvId(newConv.id);
+      setIsSearching(false);
+      setSearchQuery("");
+      setSearchResults([]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Http Polling for active conversation messages
   useEffect(() => {
@@ -107,11 +152,52 @@ function MessagesContent() {
       <div className="bg-zinc-900 border border-border rounded-xl w-full flex overflow-hidden shadow-sm">
         
         {/* Left Panel: Conversations List */}
-        <div className="w-1/3 border-r border-border bg-zinc-900/50 flex flex-col">
-          <div className="p-4 border-b border-border bg-zinc-900">
+        <div className="w-1/3 border-r border-border bg-zinc-900/50 flex flex-col relative">
+          <div className="p-4 border-b border-border bg-zinc-900 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-white tracking-tight">Messages</h2>
+            <button 
+              onClick={() => setIsSearching(!isSearching)}
+              className="p-1.5 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-border"
+            >
+              {isSearching ? <MessageSquare className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </button>
           </div>
           
+          {isSearching && (
+            <div className="p-4 border-b border-border bg-zinc-900">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
+                <input 
+                  type="text"
+                  autoFocus
+                  placeholder="Seach users..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-zinc-950 border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                />
+              </div>
+              {searchResults.length > 0 && (
+                <div className="mt-3 space-y-1">
+                  {searchResults.map(match => (
+                    <button
+                      key={match.id}
+                      onClick={() => handleStartChat(match.id)}
+                      className="w-full text-left p-3 hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-3"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-medium text-xs">
+                        {match.name.charAt(0)}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">{match.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{match.department}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto">
             {conversations.length === 0 ? (
               <div className="p-4 text-muted-foreground text-sm text-center">No active conversations.</div>

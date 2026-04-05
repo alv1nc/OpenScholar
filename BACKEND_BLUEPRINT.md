@@ -90,7 +90,9 @@ To align with the frontend API expectations and avoid overhead, the backend impl
 | POST | `/api/v1/auth/refresh` | AuthController.refresh | Cycle refresh tokens |
 | GET | `/api/v1/auth/me` | AuthController.me | Session restoration |
 | POST | `/api/v1/auth/logout` | AuthController.logout | Invalidate session / clear cookies |
+| GET | `/api/v1/users/search/query` | UsersController.search | Locate users via substring match |
 | GET | `/api/v1/users/:id` | UsersController.getProfile | View user profile data |
+| PATCH | `/api/v1/users/:id` | UsersController.updateProfile | Edit core profile metrics natively |
 | GET | `/api/v1/papers` | PapersController.getAll | Search directory via `?q=` |
 | GET | `/api/v1/papers/recent`| PapersController.getRecent| Last 20 papers |
 | GET | `/api/v1/papers/:id` | PapersController.getById | Include comments/threads |

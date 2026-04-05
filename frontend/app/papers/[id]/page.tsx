@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { DownloadCloud, Users, Calendar, Building, MessageCircle } from 'lucide-react';
 import api from '@/lib/api';
 import { Paper } from '@/components/PaperCard';
@@ -181,7 +182,9 @@ export default function PaperDetailPage() {
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-semibold text-white">{comment.authorName}</span>
+                  <Link href={`/profile/${comment.userId}`} className="font-semibold text-white hover:text-primary transition-colors cursor-pointer">
+                    {comment.authorName}
+                  </Link>
                   <span className="text-xs text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString()}</span>
                 </div>
                 <p className="text-muted-foreground leading-relaxed">{comment.content}</p>
@@ -196,7 +199,9 @@ export default function PaperDetailPage() {
                         </div>
                         <div className="flex-1 space-y-1">
                           <div className="flex items-baseline gap-2">
-                            <span className="font-medium text-white text-sm">{reply.authorName}</span>
+                            <Link href={`/profile/${reply.userId}`} className="font-medium text-white hover:text-primary transition-colors text-sm cursor-pointer">
+                              {reply.authorName}
+                            </Link>
                           </div>
                           <p className="text-sm text-muted-foreground leading-relaxed">{reply.content}</p>
                         </div>
