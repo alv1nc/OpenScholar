@@ -176,7 +176,27 @@ Clears the session configuration.
 - **Success Response (200 OK):** 
   Backend should stream the underlying `application/pdf` Blob or handle redirects to a cloud bucket (e.g., AWS S3 URL).
 
-### 5. Publish Paper
+### 5. Post Discussion Comment
+- **Endpoint:** `POST /papers/:id/comments`
+- **Request Body:** `{ "content": "My thoughts...", "parentCommentId": "optional_UUID" }`
+- **Success Response (201 Created):**
+  Returns structural sync envelope for instantaneous React processing without hard refreshing:
+  ```json
+  {
+    "success": true,
+    "comment": {
+      "id": "new_comment_uuid",
+      "paperId": "paper_uuid_1",
+      "userId": "me_uuid",
+      "authorName": "Dr. Alan Turing",
+      "content": "My thoughts...",
+      "createdAt": "2024-04-06T12:00:00Z",
+      "replies": []
+    }
+  }
+  ```
+
+### 6. Publish Paper
 - **Endpoint:** `POST /papers`
 - **Content-Type:** `multipart/form-data`
 - **Form Data Fields:** `title`, `abstract`, `authors`, `keywords`, `department`, `year`, `doi`, `file`

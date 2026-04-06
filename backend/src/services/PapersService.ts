@@ -92,4 +92,20 @@ export class PapersService {
       data: { citationCount: { increment: 1 } }
     });
   }
+
+  static async addComment(data: {
+    paperId: string;
+    userId: string;
+    content: string;
+    parentCommentId?: string;
+  }) {
+    return prisma.comment.create({
+      data: {
+        paperId: data.paperId,
+        userId: data.userId,
+        content: data.content,
+        parentCommentId: data.parentCommentId
+      }
+    });
+  }
 }

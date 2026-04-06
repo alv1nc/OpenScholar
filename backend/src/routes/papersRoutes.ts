@@ -33,5 +33,6 @@ router.get('/:id/pdf', PapersController.getPdf);
 // Protected routes
 router.post('/', authenticateJWT, upload.single('file'), PapersController.create);
 router.post('/:id/citations', authenticateJWT, requireRole(['faculty', 'admin']), PapersController.addCitation);
+router.post('/:id/comments', authenticateJWT, PapersController.addComment);
 
 export default router;

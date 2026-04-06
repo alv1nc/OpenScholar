@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PapersService } from '../services/PapersService';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import prisma from '../lib/prisma';
 import path from 'path';
 import fs from 'fs';
 
@@ -109,6 +110,43 @@ export class PapersController {
 
       const paper = await PapersService.addCitation(citedPaperId, citingPaperId);
       res.status(200).json({ success: true, citationCount: paper.citationCount });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async addComment(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+      const paperId = req.params.id as string;
+      const { content, parentCommentId } = req.body;
+
+      if (!content || content.trim().length === 0) {
+        return res.status(400).json({ message: 'Content is required to post a comment' });
+      }
+
+      const rawComment = await PapersService.addComment({
+        paperId,
+        userId: req.user.id,
+        content: content.trim(),
+        parentCommentId
+      });
+
+      // Securely grab name directly from DB to satisfy TS and guarantee accuracy
+      const dbUser = await prisma.user.findUnique({ where: { id: req.user.id } });
+
+      // The frontend expects authorName to instantly persist without forcing a page refresh
+      const resolvedComment = {
+        id: rawComment.id,
+        paperId: rawComment.paperId,
+        userId: rawComment.userId,
+        authorName: dbUser?.name || "Unknown User", 
+        content: rawComment.content,
+        createdAt: rawComment.createdAt,
+        replies: []
+      };
+
+      res.status(201).json({ success: true, comment: resolvedComment });
     } catch (error) {
       next(error);
     }
