@@ -34,3 +34,24 @@ body {
   background-color: var(--background);
   color: var(--foreground);
 }
+
+/* Page transition animations */
+@keyframes slideInFromLeft {
+  from { transform: translateX(-50px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(50px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* Forward nav: page enters from left, moves right into place */
+.page-enter-forward {
+  animation: slideInFromLeft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Backward nav: page enters from right, moves left into place */
+.page-enter-backward {
+  animation: slideInFromRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}

@@ -54,7 +54,7 @@ To securely boot the platform, you must establish a PostgreSQL database.
 3. Initialize the Prisma configuration:
    Create a root `.env` file inside the `/backend` folder. Insert the connection string you built in Step 1:
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/openscholar?schema=public"
+   DATABASE_URL="postgresql://{your postgre username}:{your postgre password}@localhost:5432/{database name}?schema=public"
    ```
 4. Push the schema to generate SQL tables:
    ```bash

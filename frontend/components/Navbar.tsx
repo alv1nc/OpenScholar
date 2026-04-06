@@ -71,7 +71,7 @@ export function Navbar() {
                   {user?.name?.charAt(0) || 'U'}
                 </div>
                 <span className="hidden md:block text-muted-foreground font-medium group-hover:text-foreground transition-colors duration-200">{user?.name}</span>
-                <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block transition-transform duration-200 group-hover:text-foreground group-hover:rotate-180" />
+                <ChevronDown className={`h-4 w-4 text-muted-foreground hidden md:block transition-transform duration-200 group-hover:text-foreground ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isDropdownOpen && (
