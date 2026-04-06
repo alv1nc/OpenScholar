@@ -35,7 +35,12 @@ This repository uses a strict decoupled infrastructure.
 To run this application natively on a fresh device, you must boot both the Backend API and the Frontend Client.
 
 ### 1. Database Setup
-Ensure you have a live **PostgreSQL** instance actively running locally.
+To securely boot the platform, you must establish a PostgreSQL database. 
+
+1. **Host your database:** You can either download and run PostgreSQL locally (e.g., using pgAdmin or the `psql` CLI) or spin up a cloud-hosted instance (e.g., via AWS RDS, Supabase, or Railway).
+2. **Create the target database:** Inside your server, create a blank database specifically named `openscholar` (or any custom name).
+3. **Capture your Connection String:** You will need to construct your connection URI mapping your username, password, port, and specific database name. The standard format looks exactly like this:
+   `postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME?schema=public`
 
 ### 2. Booting the Backend
 1. Navigate to the backend directory:
@@ -47,8 +52,10 @@ Ensure you have a live **PostgreSQL** instance actively running locally.
    npm install
    ```
 3. Initialize the Prisma configuration:
-   Create a `.env` file containing your Postgres connection string:
-   `DATABASE_URL="postgresql://user:password@localhost:5432/openscholar?schema=public"`
+   Create a root `.env` file inside the `/backend` folder. Insert the connection string you built in Step 1:
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/openscholar?schema=public"
+   ```
 4. Push the schema to generate SQL tables:
    ```bash
    npx prisma db push
