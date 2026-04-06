@@ -242,18 +242,44 @@ export default function PaperDetailPage() {
         </p>
       </div>
 
-      {/* Citation Details Placeholder */}
+      {/* Citation Network */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white border border-border rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-          <h2 className="text-xl font-semibold text-foreground mb-2 flex items-center gap-2">
-            Citation Network
-          </h2>
-          <p className="text-muted-foreground text-sm mb-4">
-            Total citations accumulated: <strong className="text-primary">{paper.citationCount}</strong>
-          </p>
-          <p className="text-xs text-muted-foreground italic border-t border-border pt-4 mt-4">
-            Interactive citation mapping is arriving in a future update once the graph database is strictly localized.
-          </p>
+        
+        {/* References */}
+        <div className="bg-white border border-border rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">References <span className="text-muted-foreground text-sm font-normal ml-2">(Papers cited)</span></h2>
+          <div className="space-y-3">
+            {(paper as any).citedBy?.length > 0 ? (
+              (paper as any).citedBy.map((ref: any) => (
+                <Link key={ref.cited.id} href={`/papers/${ref.cited.id}`} className="block p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-colors bg-white">
+                  <h3 className="font-medium text-sm text-foreground line-clamp-2">{ref.cited.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{ref.cited.authors?.join(', ')} • {ref.cited.year}</p>
+                </Link>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground italic p-4 text-center border dashed border-border rounded-lg">No internal references linked.</p>
+            )}
+          </div>
+        </div>
+
+        {/* Citations */}
+        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold text-foreground">Cited By <span className="text-muted-foreground text-sm font-normal ml-2">(Citing papers)</span></h2>
+            <span className="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">{paper.citationCount}</span>
+          </div>
+          <div className="space-y-3">
+            {(paper as any).citations?.length > 0 ? (
+              (paper as any).citations.map((ref: any) => (
+                <Link key={ref.citing.id} href={`/papers/${ref.citing.id}`} className="block p-3 rounded-lg border border-primary/20 hover:border-primary/50 transition-colors bg-white shadow-sm">
+                  <h3 className="font-medium text-sm text-foreground line-clamp-2">{ref.citing.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{ref.citing.authors?.join(', ')} • {ref.citing.year}</p>
+                </Link>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground italic p-4 text-center border dashed border-primary/20 rounded-lg">No citations yet.</p>
+            )}
+          </div>
         </div>
       </div>
 

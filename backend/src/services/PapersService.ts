@@ -31,6 +31,10 @@ export class PapersService {
   static async getById(id: string) {
     const paper = await prisma.paper.findUnique({
       where: { id },
+      include: {
+        citedBy: { include: { cited: { select: { id: true, title: true, authors: true, year: true } } } },
+        citations: { include: { citing: { select: { id: true, title: true, authors: true, year: true } } } }
+      }
     });
     
     if (!paper) {
@@ -86,8 +90,28 @@ export class PapersService {
     department?: string;
     pdfUrl?: string;
     doi?: string;
+    citedPaperIds?: string[];
   }) {
-    return prisma.paper.create({ data });
+    // Exclude citedPaperIds from raw data blob going into Prisma creation 
+    const { citedPaperIds, ...rawPaperData } = data;
+
+    const paper = await prisma.paper.create({ 
+      data: {
+        ...rawPaperData,
+        citedBy: citedPaperIds && citedPaperIds.length > 0 ? {
+          create: citedPaperIds.map(id => ({ citedPaperId: id }))
+        } : undefined
+      }
+    });
+
+    if (citedPaperIds && citedPaperIds.length > 0) {
+      await prisma.paper.updateMany({
+        where: { id: { in: citedPaperIds } },
+        data: { citationCount: { increment: 1 } }
+      });
+    }
+
+    return paper;
   }
 
   static async addCitation(citedPaperId: string, citingPaperId: string) {
