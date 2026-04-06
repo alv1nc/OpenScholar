@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes';
 import papersRoutes from './routes/papersRoutes';
 import conversationsRoutes from './routes/conversationsRoutes';
 import usersRoutes from './routes/usersRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 const app: Express = express();
 
@@ -26,6 +27,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/papers', papersRoutes);
 app.use('/api/v1/conversations', conversationsRoutes);
 app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/admin', adminRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

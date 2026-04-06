@@ -3,6 +3,25 @@ import prisma from '../lib/prisma';
 import { AuthRequest } from '../middlewares/authMiddleware';
 
 export class UsersController {
+  static async makeFirstAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+      
+      const adminCount = await prisma.user.count({ where: { role: 'admin' } });
+      if (adminCount > 0) {
+        return res.status(403).json({ message: 'An admin already exists. Bootstrapper permanently locked.' });
+      }
+
+      const admin = await prisma.user.update({
+        where: { id: req.user.id },
+        data: { role: 'admin' }
+      });
+      res.status(200).json({ message: 'Success. You are now the first Server Administrator.', user: admin });
+    } catch (e) {
+      next(e);
+    }
+  }
+
   static async getProfile(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const id = req.params.id as string;

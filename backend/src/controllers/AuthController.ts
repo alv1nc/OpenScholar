@@ -2,9 +2,19 @@ import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import { AuthService } from '../services/AuthService';
 import { env } from '../config/env';
+import prisma from '../lib/prisma';
 
 export class AuthController {
   
+  static async setupStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const adminCount = await prisma.user.count({ where: { role: 'admin' } });
+      res.status(200).json({ adminExists: adminCount > 0 });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   private static setRefreshCookie(res: Response, refreshToken: string) {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
