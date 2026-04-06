@@ -86,8 +86,18 @@ export class PapersController {
         year: parseInt(req.body.year) || new Date().getFullYear(),
         department: req.body.department,
         doi: req.body.doi,
-        pdfUrl: req.file ? `/uploads/${req.file.filename}` : undefined
+        pdfUrl: req.file ? `/uploads/${req.file.filename}` : undefined,
+        citedPaperIds: []
       };
+
+      if (req.body.citedPaperIds) {
+        try {
+          // If it was json stringified
+          paperData.citedPaperIds = JSON.parse(req.body.citedPaperIds);
+        } catch (e) {
+          // If it came uniquely mapped somehow else
+        }
+      }
 
       const paper = await PapersService.create(paperData);
 
