@@ -64,21 +64,20 @@ export default function PaperDetailPage() {
     }
   };
 
-  const handlePostComment = (e: React.FormEvent) => {
+  const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim() || !user) return;
     
-    // Optimistic UI updates
-    const mockNewComment: Comment = {
-      id: "mock_c_" + Date.now(),
-      userId: user.id,
-      authorName: user.name,
-      content: newComment,
-      createdAt: new Date().toISOString()
-    };
-    
-    setComments([mockNewComment, ...comments]);
-    setNewComment("");
+    try {
+      const res = await api.post(`/papers/${id}/comments`, { content: newComment });
+      
+      // Inject verified DB comment into local state array
+      setComments([res.data.comment, ...comments]);
+      setNewComment("");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to securely post comment across the network.");
+    }
   };
 
   if (isLoading) {

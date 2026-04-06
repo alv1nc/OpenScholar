@@ -176,7 +176,27 @@ Clears the session configuration.
 - **Success Response (200 OK):** 
   Backend should stream the underlying `application/pdf` Blob or handle redirects to a cloud bucket (e.g., AWS S3 URL).
 
-### 5. Publish Paper
+### 5. Post Discussion Comment
+- **Endpoint:** `POST /papers/:id/comments`
+- **Request Body:** `{ "content": "My thoughts...", "parentCommentId": "optional_UUID" }`
+- **Success Response (201 Created):**
+  Returns structural sync envelope for instantaneous React processing without hard refreshing:
+  ```json
+  {
+    "success": true,
+    "comment": {
+      "id": "new_comment_uuid",
+      "paperId": "paper_uuid_1",
+      "userId": "me_uuid",
+      "authorName": "Dr. Alan Turing",
+      "content": "My thoughts...",
+      "createdAt": "2024-04-06T12:00:00Z",
+      "replies": []
+    }
+  }
+  ```
+
+### 6. Publish Paper
 - **Endpoint:** `POST /papers`
 - **Content-Type:** `multipart/form-data`
 - **Form Data Fields:** `title`, `abstract`, `authors`, `keywords`, `department`, `year`, `doi`, `file`
@@ -212,13 +232,22 @@ The frontend uses short-polling (e.g. hitting `GET /messages` every 3 seconds) f
         ],
         "lastMessage": "Are we meeting tomorrow?",
         "updatedAt": "2024-04-04T10:00:00Z",
-        "unreadCount": 0
+        "unreadCount": 1
       }
     ]
   }
   ```
 
-### 2. Start / Fetch specific Conversation
+### 2. Get Global Unread Count
+- **Endpoint:** `GET /conversations/unread-count`
+- **Success Response (200 OK):**
+  ```json
+  {
+    "unreadCount": 3
+  }
+  ```
+
+### 3. Start / Fetch specific Conversation
 Used when clicking "Message" on someone's profile.
 - **Endpoint:** `POST /conversations`
 - **Request Body:** `{ "userId": "target_user_uuid" }`
@@ -232,8 +261,9 @@ Used when clicking "Message" on someone's profile.
   }
   ```
 
-### 3. Fetch Conversation Messages (Polling target)
+### 4. Fetch Conversation Messages (Polling target)
 - **Endpoint:** `GET /conversations/:id/messages`
+- **Side Effect:** Automatically sets `isRead = true` in PostgreSQL for all retrieved messages targeting the requesting user!
 - **Success Response (200 OK):** Sorted chronologically (oldest to newest).
   ```json
   {

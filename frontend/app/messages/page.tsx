@@ -16,6 +16,7 @@ interface Conversation {
   participants: Participant[];
   lastMessage: string;
   updatedAt: string;
+  unreadCount?: number;
 }
 
 interface Message {

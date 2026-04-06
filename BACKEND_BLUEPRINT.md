@@ -99,7 +99,9 @@ To align with the frontend API expectations and avoid overhead, the backend impl
 | GET | `/api/v1/papers/:id/pdf` | PapersController.getPdf | Streams the PDF blobb |
 | POST | `/api/v1/papers` | PapersController.create | Handle multi-part upload |
 | POST | `/api/v1/papers/:id/citations`| PapersController.addCitation| Atomically increment `citationCount` |
+| POST | `/api/v1/papers/:id/comments` | PapersController.addComment| Push raw text to Prisma discussion queue |
 | GET | `/api/v1/conversations` | ConversationsController.getAll | Side-panel recent chats |
+| GET | `/api/v1/conversations/unread-count` | ConversationsController.getUnreadCount | Total unread sum across all chats |
 | POST | `/api/v1/conversations` | ConversationsController.startChat| Find existing or create chat |
 | GET | `/api/v1/conversations/:id/messages`| MessagesController.list| Poll conversation history|
 | POST | `/api/v1/conversations/:id/messages`| MessagesController.send| Add message to thread |

@@ -17,17 +17,33 @@ export class ConversationsService {
       orderBy: { updatedAt: 'desc' }
     });
 
-    return convs.map((c: any) => {
+    return Promise.all(convs.map(async (c: any) => {
       const lastMessage = c.messages.length > 0 ? c.messages[0] : null;
-      // Computing unread could require an index on Messages.isRead and recipientId == userId
-      // Mocking unreadCount as 0 for simplicity if no true read tracking per message is deeply implemented
+      
+      const unreadCount = await prisma.message.count({
+        where: {
+          conversationId: c.id,
+          recipientId: userId,
+          isRead: false
+        }
+      });
+
       return {
         id: c.id,
         participants: [c.userA, c.userB],
         lastMessage: lastMessage ? lastMessage.text : '',
         updatedAt: c.updatedAt,
-        unreadCount: lastMessage && !lastMessage.isRead && lastMessage.recipientId === userId ? 1 : 0
+        unreadCount: unreadCount
       };
+    }));
+  }
+
+  static async getGlobalUnreadCount(userId: string) {
+    return prisma.message.count({
+      where: {
+        recipientId: userId,
+        isRead: false
+      }
     });
   }
 
@@ -62,7 +78,17 @@ export class ConversationsService {
     };
   }
 
-  static async getMessages(conversationId: string) {
+  static async getMessages(conversationId: string, userId: string) {
+    // When a user successfully polls messages for an active conversation, all Unread messages bound natively to them are considered Read.
+    await prisma.message.updateMany({
+      where: {
+        conversationId,
+        recipientId: userId,
+        isRead: false
+      },
+      data: { isRead: true }
+    });
+
     return prisma.message.findMany({
       where: { conversationId },
       orderBy: { createdAt: 'asc' }
