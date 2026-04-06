@@ -50,16 +50,51 @@ function MessagesContent() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const userJustSentRef = useRef(false);
+  const hasInitializedRef = useRef(false); // prevents polls from resetting active conv
 
-  // Fetch list of conversations
+  // Only scroll to bottom if user is already near the bottom, or just sent a message
+  const scrollToBottomIfNeeded = (force = false) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    if (force || distanceFromBottom < 100) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Fetch list of conversations — only auto-select on first load, never on polls
   useEffect(() => {
-    api.get('/conversations').then(res => {
-      setConversations(res.data.conversations || []);
-      if (!activeConvId && res.data.conversations?.length > 0) {
-        setActiveConvId(res.data.conversations[0].id);
+    const loadConversations = async () => {
+      try {
+        const res = await api.get('/conversations');
+        const convList: Conversation[] = res.data.conversations || [];
+
+        setConversations(convList);
+
+        // Only set the active conversation ONCE on initial mount
+        if (!hasInitializedRef.current) {
+          hasInitializedRef.current = true;
+          if (initialConvId) {
+            setActiveConvId(initialConvId);
+          } else if (convList.length > 0) {
+            setActiveConvId(convList[0].id);
+          }
+        }
+      } catch (err) {
+        console.error(err);
       }
-    }).catch(console.error);
-  }, [activeConvId]);
+    };
+
+    loadConversations();
+    // Poll the conversation list every 5s so new convs (from profile redirects) appear
+    const pollId = setInterval(loadConversations, 5000);
+    return () => clearInterval(pollId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
 
   // Search Debouncer
   useEffect(() => {
@@ -122,9 +157,15 @@ function MessagesContent() {
     return () => clearInterval(intervalId);
   }, [activeConvId]);
 
-  // Scroll to bottom on new messages
+  // Smart scroll: respect user's position when polling, but force-scroll after sending
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (userJustSentRef.current) {
+      scrollToBottomIfNeeded(true);
+      userJustSentRef.current = false;
+    } else {
+      scrollToBottomIfNeeded(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -132,7 +173,8 @@ function MessagesContent() {
     if (!newMessage.trim() || !activeConvId) return;
 
     const text = newMessage;
-    setNewMessage(""); // Optimistic clear
+    setNewMessage("");
+    userJustSentRef.current = true; // flag so the next messages update force-scrolls
 
     try {
       const res = await api.post(`/conversations/${activeConvId}/messages`, { text });
@@ -143,17 +185,18 @@ function MessagesContent() {
     }
   };
 
-  const getOtherParticipantName = (conv: Conversation) => {
-    return conv.participants.find(p => p.id !== user?.id)?.name || "Unknown User";
+  const getOtherParticipantName = (conv: Conversation | undefined) => {
+    if (!conv) return '...';
+    return conv.participants.find(p => p.id !== user?.id)?.name || 'Unknown User';
   };
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 h-[calc(100vh-4rem)] flex">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" style={{height: 'calc(100vh - 4rem)'}}>
       
-      <div className="bg-white border border-border rounded-xl w-full flex overflow-hidden shadow-sm">
+      <div className="bg-white border border-border rounded-xl w-full h-full flex overflow-hidden shadow-sm">
         
         {/* Left Panel: Conversations List */}
-        <div className="w-1/3 border-r border-border bg-white/50 flex flex-col relative">
+        <div className="w-1/3 border-r border-border bg-white/50 flex flex-col min-h-0">
           <div className="p-4 border-b border-border bg-white flex justify-between items-center">
             <h2 className="text-lg font-semibold text-foreground tracking-tight">Messages</h2>
             <button 
@@ -230,7 +273,7 @@ function MessagesContent() {
         </div>
 
         {/* Right Panel: Messages */}
-        <div className="w-2/3 flex flex-col bg-background">
+        <div className="w-2/3 flex flex-col bg-background min-h-0">
           {activeConvId ? (
             <>
               {/* Messages Header */}
@@ -239,12 +282,12 @@ function MessagesContent() {
                   <UserIcon className="w-4 h-4" />
                 </div>
                 <h3 className="font-medium text-foreground">
-                  {getOtherParticipantName(conversations.find(c => c.id === activeConvId)!)}
+                  {getOtherParticipantName(conversations.find(c => c.id === activeConvId))}
                 </h3>
               </div>
 
               {/* Messages List */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.length === 0 ? (
                   <div className="flex h-full items-center justify-center text-muted-foreground text-sm italic">
                     Start of conversation
