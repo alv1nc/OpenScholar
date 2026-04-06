@@ -36,10 +36,10 @@ export default function LoginPage() {
 
   return (
     <div className="flex-1 flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-md w-full space-y-8 bg-zinc-900 border border-border p-8 rounded-xl shadow-xl">
+      <div className="max-w-md w-full space-y-8 bg-white border border-border p-8 rounded-xl shadow-xl">
         <div className="text-center">
           <div className="w-12 h-12 bg-primary rounded-lg flex justify-center items-center font-serif text-white text-2xl mx-auto mb-4">O</div>
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Welcome Back</h2>
           <p className="text-muted-foreground text-sm">
             Sign in to your OpenScholar account
           </p>
@@ -57,7 +57,7 @@ export default function LoginPage() {
             <input
               type="email"
               {...register('email')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm transition-colors ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm transition-colors ${
                 errors.email ? 'border-error focus:ring-error focus:border-error' : 'border-border focus:ring-primary focus:border-primary'
               }`}
               placeholder="you@university.edu"
@@ -70,7 +70,7 @@ export default function LoginPage() {
             <input
               type="password"
               {...register('password')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm transition-colors ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm transition-colors ${
                 errors.password ? 'border-error focus:ring-error focus:border-error' : 'border-border focus:ring-primary focus:border-primary'
               }`}
             />
@@ -88,7 +88,7 @@ export default function LoginPage() {
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="font-medium text-primary hover:text-white transition-colors">
+          <Link href="/register" className="font-medium text-primary hover:text-foreground transition-colors">
             Register here
           </Link>
         </p>

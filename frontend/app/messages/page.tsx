@@ -150,22 +150,22 @@ function MessagesContent() {
   return (
     <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 h-[calc(100vh-4rem)] flex">
       
-      <div className="bg-zinc-900 border border-border rounded-xl w-full flex overflow-hidden shadow-sm">
+      <div className="bg-white border border-border rounded-xl w-full flex overflow-hidden shadow-sm">
         
         {/* Left Panel: Conversations List */}
-        <div className="w-1/3 border-r border-border bg-zinc-900/50 flex flex-col relative">
-          <div className="p-4 border-b border-border bg-zinc-900 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-white tracking-tight">Messages</h2>
+        <div className="w-1/3 border-r border-border bg-white/50 flex flex-col relative">
+          <div className="p-4 border-b border-border bg-white flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-foreground tracking-tight">Messages</h2>
             <button 
               onClick={() => setIsSearching(!isSearching)}
-              className="p-1.5 rounded-full hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-border"
+              className="p-1.5 rounded-full hover:bg-zinc-100 text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border"
             >
               {isSearching ? <MessageSquare className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             </button>
           </div>
           
           {isSearching && (
-            <div className="p-4 border-b border-border bg-zinc-900">
+            <div className="p-4 border-b border-border bg-white">
               <div className="relative">
                 <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                 <input 
@@ -174,7 +174,7 @@ function MessagesContent() {
                   placeholder="Seach users..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-950 border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
+                  className="w-full bg-background border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary"
                 />
               </div>
               {searchResults.length > 0 && (
@@ -183,13 +183,13 @@ function MessagesContent() {
                     <button
                       key={match.id}
                       onClick={() => handleStartChat(match.id)}
-                      className="w-full text-left p-3 hover:bg-zinc-800 rounded-lg transition-colors flex items-center gap-3"
+                      className="w-full text-left p-3 hover:bg-zinc-100 rounded-lg transition-colors flex items-center gap-3"
                     >
                       <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-medium text-xs">
                         {match.name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{match.name}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{match.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{match.department}</p>
                       </div>
                     </button>
@@ -209,28 +209,18 @@ function MessagesContent() {
                   <button
                     key={conv.id}
                     onClick={() => setActiveConvId(conv.id)}
-                    className={`w-full text-left p-4 border-b border-border/50 hover:bg-zinc-800 transition-colors flex items-center gap-3 ${isActive ? 'bg-zinc-800/80 border-l-2 border-l-primary' : 'border-l-2 border-l-transparent'}`}
+                    className={`w-full text-left p-4 border-b border-border/50 hover:bg-zinc-50 transition-colors flex items-center gap-3 ${isActive ? 'bg-zinc-50 border-l-2 border-l-primary' : 'border-l-2 border-l-transparent'}`}
                   >
                     <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center flex-shrink-0 font-medium border border-primary/20">
                       <UserIcon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-baseline mb-1">
-                        <span className={`font-medium truncate ${conv.unreadCount && conv.unreadCount > 0 ? 'text-primary drop-shadow-sm' : (isActive ? 'text-white' : 'text-zinc-300')}`}>
-                          {getOtherParticipantName(conv)}
-                        </span>
-                        <span className={`text-xs ml-2 flex-shrink-0 ${conv.unreadCount && conv.unreadCount > 0 ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
-                          {new Date(conv.updatedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <p className={`text-sm truncate leading-relaxed ${conv.unreadCount && conv.unreadCount > 0 ? 'text-white font-medium' : 'text-muted-foreground'}`}>
-                          {conv.lastMessage || 'No messages yet'}
-                        </p>
-                        {!!(conv.unreadCount && conv.unreadCount > 0) && (
-                          <span className="w-2.5 h-2.5 bg-primary rounded-full flex-shrink-0 mx-1"></span>
-                        )}
-                      </div>
+                      <p className={`text-sm font-medium truncate ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {getOtherParticipantName(conv)}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate leading-relaxed">
+                        {conv.lastMessage}
+                      </p>
                     </div>
                   </button>
                 );
@@ -244,11 +234,11 @@ function MessagesContent() {
           {activeConvId ? (
             <>
               {/* Messages Header */}
-              <div className="p-4 border-b border-border bg-zinc-900/50 flex items-center gap-3">
+              <div className="p-4 border-b border-border bg-zinc-50 flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-medium">
                   <UserIcon className="w-4 h-4" />
                 </div>
-                <h3 className="font-medium text-white">
+                <h3 className="font-medium text-foreground">
                   {getOtherParticipantName(conversations.find(c => c.id === activeConvId)!)}
                 </h3>
               </div>
@@ -267,7 +257,7 @@ function MessagesContent() {
                         <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
                           isMe 
                             ? 'bg-primary text-primary-foreground rounded-br-sm' 
-                            : 'bg-zinc-800 text-zinc-100 rounded-bl-sm border border-border'
+                            : 'bg-muted text-foreground rounded-bl-sm border border-border'
                         }`}>
                           <p>{msg.text}</p>
                           <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
@@ -282,14 +272,14 @@ function MessagesContent() {
               </div>
 
               {/* Message Input */}
-              <div className="p-4 bg-zinc-900/50 border-t border-border">
+              <div className="p-4 bg-zinc-50 border-t border-border">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
                   <input
                     type="text"
                     value={newMessage}
                     onChange={e => setNewMessage(e.target.value)}
                     placeholder="Type your message..."
-                    className="flex-1 bg-zinc-900 border border-border rounded-full px-4 py-2 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm"
+                    className="flex-1 bg-white border border-border rounded-full px-4 py-2 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm"
                   />
                   <button
                     type="submit"
