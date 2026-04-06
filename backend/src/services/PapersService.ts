@@ -8,6 +8,13 @@ export class PapersService {
     });
   }
 
+  static async getByUser(userId: string) {
+    return prisma.paper.findMany({
+      where: { uploadedBy: userId },
+      orderBy: { year: 'desc' }
+    });
+  }
+
   static async search(query: string, searchBy?: string) {
     const likeQuery = `%${query}%`;
 
