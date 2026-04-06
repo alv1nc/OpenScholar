@@ -201,18 +201,24 @@ export default function ProfilePage() {
                 />
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-muted-foreground" htmlFor="edit-department">
                   Department
                 </label>
-                <input
+                <select
                   id="edit-department"
-                  type="text"
+                  className="w-full bg-white border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   value={editForm.department}
                   onChange={(e) => setEditForm((f) => ({ ...f, department: e.target.value }))}
-                  className="w-full px-4 py-2.5 bg-white border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  placeholder="e.g. Computer Science"
-                />
+                >
+                  <option value="">Select a department</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Electronics and Communication">Electronics and Communication</option>
+                  <option value="Electrical and Electronics">Electrical and Electronics</option>
+                  <option value="Mechanical">Mechanical</option>
+                  <option value="Civil">Civil</option>
+                  <option value="Biology">Biology</option>
+                </select>
               </div>
 
               {saveError && (

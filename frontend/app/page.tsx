@@ -65,21 +65,21 @@ export default function LandingPage() {
 
         {/* Feature Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mt-24 text-left">
-          <div className="bg-white border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white border border-border p-6 rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl">
             <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-4">
               <BookOpen className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">Publish Instantly</h3>
             <p className="text-muted-foreground">Upload your PDF papers and metadata directly to the repository and make your work accessible.</p>
           </div>
-          <div className="bg-white border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white border border-border p-6 rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl">
             <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-600 mb-4">
               <Search className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-bold text-foreground mb-2">Discover Research</h3>
             <p className="text-muted-foreground">Search through all institutional publications dynamically by department, year, and author.</p>
           </div>
-          <div className="bg-white border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white border border-border p-6 rounded-2xl shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl">
             <div className="w-12 h-12 bg-teal-500/10 rounded-xl flex items-center justify-center text-teal-600 mb-4">
               <Users className="w-6 h-6" />
             </div>

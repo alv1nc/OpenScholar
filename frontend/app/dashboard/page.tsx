@@ -40,7 +40,7 @@ export default function Dashboard() {
     <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       
       {/* Hero Section */}
-      <section className="bg-white border border-border rounded-2xl p-8 sm:p-12 relative overflow-hidden">
+      <section className="bg-white border border-border rounded-2xl p-8 sm:p-12 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-2xl">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-foreground tracking-tight mb-4">
@@ -58,7 +58,7 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold text-foreground mb-6 tracking-tight">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
-          <Link href="/papers/publish" className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all text-center">
+          <Link href="/papers/publish" className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl text-center">
             <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <UploadCloud className="w-6 h-6" />
             </div>
@@ -66,7 +66,7 @@ export default function Dashboard() {
             <p className="text-sm text-muted-foreground mt-1">Upload PDF and metadata</p>
           </Link>
 
-          <Link href="/search" className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all text-center">
+          <Link href="/search" className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl text-center">
             <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Search className="w-6 h-6" />
             </div>
@@ -74,7 +74,7 @@ export default function Dashboard() {
             <p className="text-sm text-muted-foreground mt-1">Find research output</p>
           </Link>
 
-          <Link href="/messages" className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all text-center">
+          <Link href="/messages" className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl text-center">
             <div className="w-12 h-12 rounded-full bg-teal-500/10 text-teal-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <MessageSquare className="w-6 h-6" />
             </div>
@@ -82,7 +82,7 @@ export default function Dashboard() {
             <p className="text-sm text-muted-foreground mt-1">Discuss with peers</p>
           </Link>
 
-          <Link href={`/profile/${user?.id}`} className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all text-center">
+          <Link href={`/profile/${user?.id}`} className="group flex flex-col items-center bg-white border border-border rounded-xl p-6 hover:bg-zinc-50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl text-center">
             <div className="w-12 h-12 rounded-full bg-purple-500/10 text-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <UserIcon className="w-6 h-6" />
             </div>

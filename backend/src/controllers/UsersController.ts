@@ -50,19 +50,27 @@ export class UsersController {
   static async search(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const query = req.query.q as string;
-      if (!query || query.trim().length === 0) {
+      const department = req.query.department as string;
+
+      const where: Record<string, unknown> = {};
+
+      if (query && query.trim().length > 0) {
+        where.name = { contains: query.trim(), mode: 'insensitive' };
+      }
+
+      if (department && department.trim().length > 0) {
+        where.department = department.trim();
+      }
+
+      // Return empty if no filters specified
+      if (Object.keys(where).length === 0) {
         return res.status(200).json({ users: [] });
       }
 
       const users = await prisma.user.findMany({
-        where: {
-          name: {
-            contains: query.trim(),
-            mode: 'insensitive' // case-insensitive search
-          }
-        },
-        select: { id: true, name: true, department: true }, // Expose minimal public info
-        take: 10 // Limit results for performance
+        where,
+        select: { id: true, name: true, role: true, department: true },
+        take: 20
       });
 
       res.status(200).json({ users });
