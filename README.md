@@ -87,3 +87,94 @@ To securely boot the platform, you must establish a PostgreSQL database.
    ```
 
 Navigate to **[http://localhost:3000](http://localhost:3000)** and register your first account!
+
+---
+
+## Administrator Setup & Governance
+
+OpenScholar ships with a built-in admin system that gives a designated administrator full control over the platform — users, papers, and roles. This section covers everything from claiming the first admin seat to day-to-day platform governance.
+
+> For the full reference document, see [ADMIN_GUIDE.md](./ADMIN_GUIDE.md).
+
+---
+
+### Step 1 — Register a Normal Account
+
+Visit `http://localhost:3000/register` and create an account. Any role (student or faculty) works — you'll upgrade it in the next step.
+
+---
+
+### Step 2 — Claim the Administrator Seat via `/setup`
+
+Navigate to `http://localhost:3000/setup`.
+
+You will see the **OpenScholar Setup Wizard** — a one-time, self-locking page that only works when no admin exists in the database yet.
+
+1. Enter the **email and password** of the account you just registered.
+2. Click **"Claim Administrator Seat"**.
+3. You'll see a success confirmation screen. Your account is now admin.
+4. **Log back in** — the Admin Panel link will appear in your profile dropdown in the top-right navigation.
+
+> **⚠️ The `/setup` page permanently locks itself after the first admin is created.** If you navigate to it after an admin already exists, you'll see a "Setup Already Complete" screen and no changes can be made. All subsequent admins must be promoted via the Admin Panel.
+
+---
+
+### Step 3 — Access the Admin Panel
+
+Once logged in as an admin, click your **profile avatar** (top-right) and select **"Admin Panel"** from the dropdown. You can also navigate directly to `http://localhost:3000/admin`.
+
+Non-admin users are automatically redirected away from this page.
+
+---
+
+### Admin Panel Features
+
+The Admin Panel has two tabs with live search on both:
+
+#### 👥 User Base Tab
+| Action | When Available | What It Does |
+|---|---|---|
+| **Make Faculty** | Student accounts only | Upgrades role label to `faculty` |
+| **Grant Admin** | Non-admin accounts | Promotes account to full `admin` |
+| **Terminate** | Any account except your own | **Permanent CASCADE DELETE** — wipes all their papers, comments, messages, and conversations |
+
+> You cannot delete your own account from the panel. It shows "Protected User" next to your row.
+
+#### 📚 Global Library Tab
+| Action | What It Does |
+|---|---|
+| **Shred Asset** | **Permanent CASCADE DELETE** — wipes the paper, all its comments, and all citation links |
+
+Both tabs have a **live search bar** that filters instantly by name/email/role (users) or title/author/department (papers). A result count (`3 of 47 users`) is shown at all times.
+
+---
+
+### Creating Additional Admins
+
+Once you are the admin, you can promote any other user directly from the **User Base** tab:
+1. Find the user in the table.
+2. Click **"Grant Admin"**.
+3. They must **log out and log back in** for their session to reflect the new role.
+
+---
+
+### Database Consistency (Cascade Deletes)
+
+All delete operations in OpenScholar are backed by **PostgreSQL `ON DELETE CASCADE`** rules, meaning the database enforces consistency automatically:
+
+| If you delete... | These are also deleted automatically |
+|---|---|
+| A **User** | All their papers, comments, messages, conversations, and citation links |
+| A **Paper** | All its comments and citation records |
+| A **Comment** | All nested replies under it |
+| A **Conversation** | All messages within it |
+
+These operations are **irreversible**. There is no soft delete or undo.
+
+---
+
+### Security Model
+
+- All `/api/v1/admin/*` routes require both a valid JWT **and** `role: 'admin'` — enforced server-side.
+- The frontend client-side redirect is a UX convenience only, **not** a security boundary.
+- The `/setup` endpoint checks the database on every call and refuses if any admin already exists.
