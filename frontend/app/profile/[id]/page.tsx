@@ -106,18 +106,18 @@ export default function ProfilePage() {
     <div className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
       {/* Profile Header */}
-      <div className="bg-zinc-900 border border-border rounded-3xl p-8 sm:p-12 mb-10 flex flex-col sm:flex-row gap-8 items-center sm:items-start relative overflow-hidden">
+      <div className="bg-white border border-border rounded-3xl p-8 sm:p-12 mb-10 flex flex-col sm:flex-row gap-8 items-center sm:items-start relative overflow-hidden">
 
         {/* Background Accent */}
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="flex-shrink-0 w-32 h-32 rounded-full bg-zinc-800 border-4 border-zinc-950 flex justify-center items-center text-zinc-500 text-5xl font-bold shadow-xl z-10">
+        <div className="flex-shrink-0 w-32 h-32 rounded-full bg-muted border-4 border-background flex justify-center items-center text-muted-foreground text-5xl font-bold shadow-xl z-10">
           {profile.name.charAt(0)}
         </div>
 
         <div className="flex-1 text-center sm:text-left z-10 space-y-4">
           <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">{profile.name}</h1>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">{profile.name}</h1>
             <p className="text-primary mt-1 capitalize font-medium">{profile.role}</p>
           </div>
 
@@ -131,7 +131,7 @@ export default function ProfilePage() {
             {isOwnProfile ? (
               <button
                 onClick={handleOpenEdit}
-                className="px-5 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-md font-medium transition-colors border border-border shadow-sm"
+                className="px-5 py-2 bg-white hover:bg-zinc-50 text-foreground rounded-md font-medium transition-colors border border-border shadow-sm"
               >
                 Edit Profile
               </button>
@@ -151,7 +151,7 @@ export default function ProfilePage() {
       {/* Publications List */}
       <div>
         <div className="flex justify-between items-end mb-6">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <GraduationCap className="w-6 h-6 text-primary" /> Publications
           </h2>
         </div>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="bg-zinc-900 border border-border rounded-xl p-10 text-center text-muted-foreground italic">
+          <div className="bg-white border border-border rounded-xl p-10 text-center text-muted-foreground italic">
             This user hasn&apos;t published any papers yet.
           </div>
         )}
@@ -172,13 +172,13 @@ export default function ProfilePage() {
       {/* Edit Profile Modal */}
       {isEditOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-zinc-900 border border-border rounded-2xl w-full max-w-md shadow-2xl">
+          <div className="bg-background border border-border rounded-2xl w-full max-w-md shadow-2xl">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
-              <h2 className="text-lg font-semibold text-white">Edit Profile</h2>
+              <h2 className="text-lg font-semibold text-foreground">Edit Profile</h2>
               <button
                 onClick={() => setIsEditOpen(false)}
-                className="text-zinc-400 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -188,7 +188,7 @@ export default function ProfilePage() {
             {/* Modal Body */}
             <div className="p-6 space-y-5">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-zinc-300" htmlFor="edit-name">
+                <label className="text-sm font-medium text-muted-foreground" htmlFor="edit-name">
                   Full Name
                 </label>
                 <input
@@ -196,13 +196,13 @@ export default function ProfilePage() {
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
-                  className="w-full px-4 py-2.5 bg-zinc-800 border border-border rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full px-4 py-2.5 bg-white border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   placeholder="Your full name"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-zinc-300" htmlFor="edit-department">
+                <label className="text-sm font-medium text-muted-foreground" htmlFor="edit-department">
                   Department
                 </label>
                 <input
@@ -210,7 +210,7 @@ export default function ProfilePage() {
                   type="text"
                   value={editForm.department}
                   onChange={(e) => setEditForm((f) => ({ ...f, department: e.target.value }))}
-                  className="w-full px-4 py-2.5 bg-zinc-800 border border-border rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full px-4 py-2.5 bg-white border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   placeholder="e.g. Computer Science"
                 />
               </div>
@@ -227,7 +227,7 @@ export default function ProfilePage() {
               <button
                 onClick={() => setIsEditOpen(false)}
                 disabled={isSaving}
-                className="px-5 py-2 text-sm font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-lg border border-border transition-colors disabled:opacity-50"
+                className="px-5 py-2 text-sm font-medium text-foreground hover:bg-zinc-50 bg-white rounded-lg border border-border transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>

@@ -50,13 +50,13 @@ function SearchContent() {
         {/* Filters Sidebar */}
         <aside className="w-full md:w-64 flex-shrink-0 space-y-6">
           <div>
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2 mb-4">
               <Filter className="w-5 h-5" /> Filters
             </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Department</label>
-                <select className="w-full bg-zinc-900 border border-border text-white rounded-md py-2 px-3 text-sm focus:ring-primary focus:border-primary">
+                <select className="w-full bg-white border border-border text-foreground rounded-md py-2 px-3 text-sm focus:ring-primary focus:border-primary">
                   <option value="">All Departments</option>
                   <option value="cs">Computer Science</option>
                   <option value="physics">Physics</option>
@@ -65,7 +65,7 @@ function SearchContent() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-2">Year</label>
-                <select className="w-full bg-zinc-900 border border-border text-white rounded-md py-2 px-3 text-sm focus:ring-primary focus:border-primary">
+                <select className="w-full bg-white border border-border text-foreground rounded-md py-2 px-3 text-sm focus:ring-primary focus:border-primary">
                   <option value="">Any Year</option>
                   <option value="2024">2024</option>
                   <option value="2023">2023</option>
@@ -86,7 +86,7 @@ function SearchContent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by keywords, titles, or authors..."
-              className="block w-full pl-12 pr-4 py-4 text-lg bg-zinc-900 border border-border rounded-xl text-white placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all shadow-sm"
+              className="block w-full pl-12 pr-4 py-4 text-lg bg-white border border-border rounded-xl text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none transition-all shadow-sm"
             />
           </div>
 
@@ -98,7 +98,7 @@ function SearchContent() {
             {isLoading ? (
               <div className="space-y-4 animate-pulse">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="h-32 bg-zinc-900 border border-border rounded-xl"></div>
+                  <div key={i} className="h-32 bg-white border border-border rounded-xl"></div>
                 ))}
               </div>
             ) : results.length > 0 ? (
@@ -108,7 +108,7 @@ function SearchContent() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-zinc-900 border border-border rounded-xl">
+              <div className="text-center py-12 bg-white border border-border rounded-xl">
                 <p className="text-lg text-muted-foreground">No papers found matching &quot;{query}&quot;</p>
               </div>
             )}

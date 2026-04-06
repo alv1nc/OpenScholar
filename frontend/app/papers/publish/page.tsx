@@ -71,7 +71,7 @@ export default function PublishPaperPage() {
   return (
     <div className="flex-1 w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white tracking-tight">Publish a Paper</h1>
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">Publish a Paper</h1>
         <p className="text-muted-foreground mt-2">Submit your research to the institutional repository.</p>
       </div>
 
@@ -81,16 +81,16 @@ export default function PublishPaperPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-zinc-900 border border-border p-8 rounded-2xl shadow-sm">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white border border-border p-8 rounded-2xl shadow-sm">
         
         {/* PDF Upload Area */}
         <div>
-          <label className="block text-sm font-medium text-white mb-2">Paper PDF Document</label>
-          <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors ${fileError ? 'border-error bg-error/5' : 'border-border hover:border-primary/50'}`}>
+          <label className="block text-sm font-medium text-foreground mb-2">Paper PDF Document</label>
+          <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-xl transition-colors ${fileError ? 'border-error bg-error/5' : 'border-border hover:border-primary/50 bg-background/50'}`}>
             <div className="space-y-2 text-center">
               <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
               <div className="flex text-sm text-muted-foreground justify-center">
-                <label className="relative cursor-pointer bg-zinc-900 rounded-md font-medium text-primary hover:text-primary-hover focus-within:outline-none">
+                <label className="relative cursor-pointer bg-transparent rounded-md font-medium text-primary hover:text-primary-hover focus-within:outline-none">
                   <span>Upload a file</span>
                   <input 
                     type="file" 
@@ -107,7 +107,7 @@ export default function PublishPaperPage() {
                 <p className="pl-1">or drag and drop</p>
               </div>
               <p className="text-xs text-muted-foreground">PDF up to 50MB</p>
-              {selectedFile && <p className="text-sm font-medium text-emerald-400 mt-2">Selected: {selectedFile.name}</p>}
+              {selectedFile && <p className="text-sm font-medium text-emerald-600 mt-2">Selected: {selectedFile.name}</p>}
             </div>
           </div>
           {fileError && <p className="mt-2 text-sm text-error">{fileError}</p>}
@@ -116,41 +116,41 @@ export default function PublishPaperPage() {
         {/* Metadata Fields */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-white mb-1">Title</label>
-            <input type="text" {...register('title')} className={`w-full bg-zinc-950 border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 ${errors.title ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
+            <label className="block text-sm font-medium text-foreground mb-1">Title</label>
+            <input type="text" {...register('title')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.title ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
             {errors.title && <p className="mt-1 text-sm text-error">{errors.title.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-white mb-1">Abstract</label>
-            <textarea {...register('abstract')} rows={4} className={`w-full bg-zinc-950 border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 ${errors.abstract ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
+            <label className="block text-sm font-medium text-foreground mb-1">Abstract</label>
+            <textarea {...register('abstract')} rows={4} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.abstract ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
             {errors.abstract && <p className="mt-1 text-sm text-error">{errors.abstract.message}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-white mb-1">Authors (comma separated)</label>
-              <input type="text" {...register('authors')} className={`w-full bg-zinc-950 border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 ${errors.authors ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} placeholder="Jane Doe, John Smith" />
+              <label className="block text-sm font-medium text-foreground mb-1">Authors (comma separated)</label>
+              <input type="text" {...register('authors')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.authors ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} placeholder="Jane Doe, John Smith" />
               {errors.authors && <p className="mt-1 text-sm text-error">{errors.authors.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-white mb-1">Keywords</label>
-              <input type="text" {...register('keywords')} className={`w-full bg-zinc-950 border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 ${errors.keywords ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} placeholder="Machine Learning, AI" />
+              <label className="block text-sm font-medium text-foreground mb-1">Keywords</label>
+              <input type="text" {...register('keywords')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.keywords ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} placeholder="Machine Learning, AI" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-white mb-1">Department</label>
-              <input type="text" {...register('department')} className={`w-full bg-zinc-950 border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 ${errors.department ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
+              <label className="block text-sm font-medium text-foreground mb-1">Department</label>
+              <input type="text" {...register('department')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.department ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
               {errors.department && <p className="mt-1 text-sm text-error">{errors.department.message}</p>}
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-sm font-medium text-white mb-1">Year</label>
-                <input type="text" {...register('year')} className={`w-full bg-zinc-950 border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 ${errors.year ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
+                <label className="block text-sm font-medium text-foreground mb-1">Year</label>
+                <input type="text" {...register('year')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.year ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
                 {errors.year && <p className="mt-1 text-sm text-error">{errors.year.message}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-white mb-1">DOI (Optional)</label>
-                <input type="text" {...register('doi')} className="w-full bg-zinc-950 border border-border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary" />
+                <label className="block text-sm font-medium text-foreground mb-1">DOI (Optional)</label>
+                <input type="text" {...register('doi')} className="w-full bg-background border border-border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary" />
               </div>
             </div>
           </div>

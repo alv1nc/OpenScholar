@@ -94,14 +94,14 @@ export default function PaperDetailPage() {
       
       {/* Paper Metadata Header */}
       <div className="space-y-6">
-        <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight leading-snug">
+        <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight leading-snug">
           {paper.title}
         </h1>
         
         <div className="flex flex-wrap items-center gap-y-3 gap-x-6 text-muted-foreground">
           <span className="flex items-center gap-2">
             <Users className="w-5 h-5" />
-            <span className="font-medium text-white">{paper.authors.join(', ')}</span>
+            <span className="font-medium text-foreground">{paper.authors.join(', ')}</span>
           </span>
           <span className="flex items-center gap-2">
             <Calendar className="w-5 h-5" />
@@ -128,8 +128,8 @@ export default function PaperDetailPage() {
       </div>
 
       {/* Abstract */}
-      <div className="bg-zinc-900 border border-border rounded-2xl p-8">
-        <h2 className="text-xl font-semibold text-white mb-4">Abstract</h2>
+      <div className="bg-white border border-border rounded-2xl p-8">
+        <h2 className="text-xl font-semibold text-foreground mb-4">Abstract</h2>
         <p className="text-muted-foreground leading-relaxed text-lg">
           {paper.abstract}
         </p>
@@ -137,8 +137,8 @@ export default function PaperDetailPage() {
 
       {/* Citation Details Placeholder */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-zinc-900 border border-border rounded-2xl p-8">
-          <h2 className="text-xl font-semibold text-white mb-2 flex items-center gap-2">
+        <div className="bg-white border border-border rounded-2xl p-8">
+          <h2 className="text-xl font-semibold text-foreground mb-2 flex items-center gap-2">
             Citation Network
           </h2>
           <p className="text-muted-foreground text-sm mb-4">
@@ -152,7 +152,7 @@ export default function PaperDetailPage() {
 
       {/* Comment Thread */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <MessageCircle className="w-6 h-6" /> Discussion
         </h2>
         
@@ -161,13 +161,13 @@ export default function PaperDetailPage() {
             value={newComment}
             onChange={e => setNewComment(e.target.value)}
             placeholder="Share your thoughts or ask the authors a question..."
-            className="w-full bg-zinc-900 border border-border rounded-xl p-4 text-white placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none resize-none min-h-[100px]"
+            className="w-full bg-white border border-border rounded-xl p-4 text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary focus:outline-none resize-none min-h-[100px]"
           />
           <div className="flex justify-end">
             <button 
               type="submit"
               disabled={!newComment.trim()}
-              className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-md font-medium transition-colors border border-border disabled:opacity-50"
+              className="px-6 py-2 bg-white hover:bg-zinc-50 text-foreground rounded-md font-medium transition-colors border border-border disabled:opacity-50"
             >
               Post Comment
             </button>
@@ -182,7 +182,7 @@ export default function PaperDetailPage() {
               </div>
               <div className="flex-1 space-y-1">
                 <div className="flex items-baseline gap-2">
-                  <Link href={`/profile/${comment.userId}`} className="font-semibold text-white hover:text-primary transition-colors cursor-pointer">
+                  <Link href={`/profile/${comment.userId}`} className="font-semibold text-foreground hover:text-primary transition-colors cursor-pointer">
                     {comment.authorName}
                   </Link>
                   <span className="text-xs text-muted-foreground">{new Date(comment.createdAt).toLocaleDateString()}</span>
@@ -194,12 +194,12 @@ export default function PaperDetailPage() {
                   <div className="mt-4 space-y-4 border-l-2 border-border pl-4">
                     {comment.replies.map(reply => (
                       <div key={reply.id} className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 font-bold text-sm">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground font-bold text-sm">
                           {reply.authorName.charAt(0)}
                         </div>
                         <div className="flex-1 space-y-1">
                           <div className="flex items-baseline gap-2">
-                            <Link href={`/profile/${reply.userId}`} className="font-medium text-white hover:text-primary transition-colors text-sm cursor-pointer">
+                            <Link href={`/profile/${reply.userId}`} className="font-medium text-foreground hover:text-primary transition-colors text-sm cursor-pointer">
                               {reply.authorName}
                             </Link>
                           </div>

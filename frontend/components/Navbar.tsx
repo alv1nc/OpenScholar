@@ -29,8 +29,8 @@ export function Navbar() {
           
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/dashboard" className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary rounded-md flex justify-center items-center font-serif">O</div>
+            <Link href="/dashboard" className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded-md flex justify-center items-center font-serif text-white font-bold">O</div>
               OpenScholar
             </Link>
           </div>
@@ -55,7 +55,7 @@ export function Navbar() {
           <div className="flex items-center gap-6">
             
             {/* Messages */}
-            <Link href="/messages" className="relative text-muted-foreground hover:text-white transition-colors">
+            <Link href="/messages" className="relative text-muted-foreground hover:text-foreground transition-colors">
               <MessageSquare className="h-6 w-6" />
               {unreadMessagesCount > 0 && (
                 <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-error rounded-full">
@@ -78,14 +78,14 @@ export function Navbar() {
               </button>
 
               {isDropdownOpen && (
-                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-zinc-900 ring-1 ring-black ring-opacity-5 border border-border">
+                <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5 border border-border">
                   <div className="py-1">
                     <Link
                       href={`/profile/${user?.id}`}
                       className="group flex items-center px-4 py-2 text-sm text-foreground hover:bg-muted"
                       onClick={() => setIsDropdownOpen(false)}
                     >
-                      <User className="mr-3 h-4 w-4 text-muted-foreground group-hover:text-white" />
+                      <User className="mr-3 h-4 w-4 text-muted-foreground group-hover:text-foreground" />
                       Your Profile
                     </Link>
                     <button
@@ -95,7 +95,7 @@ export function Navbar() {
                       }}
                       className="group flex w-full items-center px-4 py-2 text-sm text-foreground hover:bg-muted"
                     >
-                      <LogOut className="mr-3 h-4 w-4 text-muted-foreground group-hover:text-white" />
+                      <LogOut className="mr-3 h-4 w-4 text-muted-foreground group-hover:text-foreground" />
                       Sign out
                     </button>
                   </div>

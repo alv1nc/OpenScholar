@@ -40,9 +40,9 @@ export default function RegisterPage() {
 
   return (
     <div className="flex-1 flex justify-center items-center py-12 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-md w-full space-y-6 bg-zinc-900 border border-border p-8 rounded-xl shadow-xl">
+      <div className="max-w-md w-full space-y-6 bg-white border border-border p-8 rounded-xl shadow-xl">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Create Account</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Create Account</h2>
           <p className="text-muted-foreground text-sm">Join OpenScholar</p>
         </div>
 
@@ -58,7 +58,7 @@ export default function RegisterPage() {
             <input
               type="text"
               {...register('fullName')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
                 errors.fullName ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'
               }`}
             />
@@ -70,7 +70,7 @@ export default function RegisterPage() {
             <input
               type="email"
               {...register('email')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
                 errors.email ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'
               }`}
             />
@@ -82,7 +82,7 @@ export default function RegisterPage() {
             <input
               type="text"
               {...register('department')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
                 errors.department ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'
               }`}
               placeholder="e.g. Computer Science"
@@ -94,7 +94,7 @@ export default function RegisterPage() {
             <label className="block text-sm font-medium text-muted-foreground mb-1">Role</label>
             <select
               {...register('role')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
                 errors.role ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'
               }`}
             >
@@ -109,7 +109,7 @@ export default function RegisterPage() {
             <input
               type="password"
               {...register('password')}
-              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-zinc-950 text-white placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
+              className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
                 errors.password ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'
               }`}
             />
@@ -127,7 +127,7 @@ export default function RegisterPage() {
 
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-primary hover:text-white transition-colors">
+          <Link href="/login" className="font-medium text-primary hover:text-foreground transition-colors">
             Sign in
           </Link>
         </p>

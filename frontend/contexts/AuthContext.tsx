@@ -69,7 +69,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // Ignore errors on logout
     }
-    router.push('/login');
+    
+    if (typeof window !== 'undefined') {
+      const publicPaths = ['/', '/login', '/register'];
+      if (!publicPaths.includes(window.location.pathname)) {
+        router.push('/login');
+      }
+    }
   };
 
   return (
