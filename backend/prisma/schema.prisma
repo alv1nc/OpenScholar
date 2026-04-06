@@ -31,7 +31,7 @@ enum Role {
 model Paper {
   id            String   @id @default(uuid()) @db.Uuid
   uploadedBy    String   @db.Uuid
-  user          User     @relation(fields: [uploadedBy], references: [id])
+  user          User     @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
   title         String
   abstract      String
   authors       String[]
@@ -50,8 +50,8 @@ model Paper {
 model Citation {
   citingPaperId String @db.Uuid
   citedPaperId  String @db.Uuid
-  citing        Paper  @relation("citingPaper", fields: [citingPaperId], references: [id])
-  cited         Paper  @relation("citedPaper", fields: [citedPaperId], references: [id])
+  citing        Paper  @relation("citingPaper", fields: [citingPaperId], references: [id], onDelete: Cascade)
+  cited         Paper  @relation("citedPaper", fields: [citedPaperId], references: [id], onDelete: Cascade)
 
   @@id([citingPaperId, citedPaperId])
 }
@@ -59,11 +59,11 @@ model Citation {
 model Comment {
   id              String   @id @default(uuid()) @db.Uuid
   paperId         String   @db.Uuid
-  paper           Paper    @relation(fields: [paperId], references: [id])
+  paper           Paper    @relation(fields: [paperId], references: [id], onDelete: Cascade)
   userId          String   @db.Uuid
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   parentCommentId String?  @db.Uuid
-  parent          Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  parent          Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
   replies         Comment[] @relation("CommentReplies")
   content         String
   isDeleted       Boolean  @default(false)
@@ -73,9 +73,9 @@ model Comment {
 model Conversation {
   id              String   @id @default(uuid()) @db.Uuid
   participantA    String   @db.Uuid
-  userA           User     @relation("ConversationParticipantA", fields: [participantA], references: [id])
+  userA           User     @relation("ConversationParticipantA", fields: [participantA], references: [id], onDelete: Cascade)
   participantB    String   @db.Uuid
-  userB           User     @relation("ConversationParticipantB", fields: [participantB], references: [id])
+  userB           User     @relation("ConversationParticipantB", fields: [participantB], references: [id], onDelete: Cascade)
   updatedAt       DateTime @default(now()) @updatedAt
   messages        Message[]
 
@@ -85,11 +85,11 @@ model Conversation {
 model Message {
   id              String   @id @default(uuid()) @db.Uuid
   conversationId  String   @db.Uuid
-  conversation    Conversation @relation(fields: [conversationId], references: [id])
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   senderId        String   @db.Uuid
-  sender          User     @relation("MessageSender", fields: [senderId], references: [id])
+  sender          User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
   recipientId     String   @db.Uuid
-  recipient       User     @relation("MessageRecipient", fields: [recipientId], references: [id])
+  recipient       User     @relation("MessageRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
   text            String
   isRead          Boolean  @default(false)
   createdAt       DateTime @default(now())

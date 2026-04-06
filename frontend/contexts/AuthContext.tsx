@@ -8,7 +8,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'student' | 'faculty';
+  role: 'student' | 'faculty' | 'admin';
   department: string;
   avatarUrl?: string;
 }
