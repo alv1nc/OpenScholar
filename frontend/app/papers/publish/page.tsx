@@ -25,6 +25,27 @@ export default function PublishPaperPage() {
   const [fileError, setFileError] = useState<string | null>(null);
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [citationQuery, setCitationQuery] = useState("");
+  const [citationResults, setCitationResults] = useState<any[]>([]);
+  const [selectedCitations, setSelectedCitations] = useState<{id: string, title: string}[]>([]);
+
+  React.useEffect(() => {
+    if (citationQuery.trim().length === 0) {
+      setCitationResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await api.get(`/papers?q=${encodeURIComponent(citationQuery)}`);
+        // Filter out already selected
+        const matches = res.data.papers.filter((p: any) => !selectedCitations.some(sc => sc.id === p.id));
+        setCitationResults(matches);
+      } catch (e) {}
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [citationQuery, selectedCitations]);
+  
   
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<PublishFormValues>({
     resolver: zodResolver(publishSchema),
@@ -56,6 +77,7 @@ export default function PublishPaperPage() {
       formData.append('department', data.department);
       formData.append('year', data.year);
       formData.append('doi', data.doi || '');
+      formData.append('citedPaperIds', JSON.stringify(selectedCitations.map(c => c.id)));
       formData.append('file', selectedFile);
 
       // Axios will natively detect FormData and inject the multipart boundary tag on its own.
@@ -154,6 +176,51 @@ export default function PublishPaperPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Citations Block */}
+        <div className="pt-6 border-t border-border">
+          <label className="block text-sm font-medium text-foreground mb-2">References & Citations (Optional)</label>
+          <div className="relative">
+            <input 
+              type="text" 
+              value={citationQuery}
+              onChange={e => setCitationQuery(e.target.value)}
+              placeholder="Search OpenScholar to link references..."
+              className="w-full bg-background border border-border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary" 
+            />
+            {citationResults.length > 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+                 {citationResults.map(p => (
+                   <div key={p.id} onClick={() => {
+                     setSelectedCitations(prev => [...prev, { id: p.id, title: p.title }]);
+                     setCitationQuery("");
+                     setCitationResults([]);
+                   }} className="cursor-pointer p-3 hover:bg-muted border-b border-border">
+                     <p className="text-sm font-medium text-foreground truncate">{p.title}</p>
+                     <p className="text-xs text-muted-foreground">{p.authors.join(', ')}</p>
+                   </div>
+                 ))}
+              </div>
+            )}
+            {citationQuery.length > 2 && citationResults.length === 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-border rounded-md shadow-lg p-4 text-center">
+                <p className="text-sm text-muted-foreground">No matching papers found.</p>
+                <p className="text-xs text-muted-foreground mt-1">Please select an existing OpenScholar paper from the dropdown.</p>
+              </div>
+            )}
+          </div>
+          
+          {selectedCitations.length > 0 && (
+            <div className="mt-3 space-y-2">
+              {selectedCitations.map(sc => (
+                <div key={sc.id} className="flex justify-between items-center bg-muted/50 border border-border p-2 rounded-md">
+                  <span className="text-sm text-foreground truncate mr-4">{sc.title}</span>
+                  <button type="button" onClick={() => setSelectedCitations(prev => prev.filter(x => x.id !== sc.id))} className="text-muted-foreground hover:text-error text-xs font-medium px-2 py-1 bg-background rounded border border-border">Remove</button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="pt-4 border-t border-border flex justify-end">
