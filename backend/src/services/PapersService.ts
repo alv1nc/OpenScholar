@@ -8,14 +8,22 @@ export class PapersService {
     });
   }
 
-  static async search(query: string) {
+  static async search(query: string, searchBy?: string) {
+    const likeQuery = `%${query}%`;
+
+    let idsRows: { id: string }[] = [];
+
+    if (searchBy === 'author') {
+      idsRows = await prisma.$queryRaw<{id: string}[]>`SELECT id FROM "Paper" WHERE array_to_string(authors, ',') ILIKE ${likeQuery}`;
+    } else {
+      // Default to title
+      idsRows = await prisma.$queryRaw<{id: string}[]>`SELECT id FROM "Paper" WHERE title ILIKE ${likeQuery}`;
+    }
+
+    const ids = idsRows.map((r) => r.id);
+
     return prisma.paper.findMany({
-      where: {
-        OR: [
-          { title: { contains: query, mode: 'insensitive' } },
-          { keywords: { has: query } } // basic GIN-friendly search
-        ]
-      },
+      where: { id: { in: ids } },
       orderBy: { citationCount: 'desc' }
     });
   }

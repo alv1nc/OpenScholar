@@ -79,14 +79,20 @@ export default function RegisterPage() {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground mb-1">Department</label>
-            <input
-              type="text"
+            <select
               {...register('department')}
               className={`block w-full px-3 py-2 border rounded-md shadow-sm bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 sm:text-sm ${
                 errors.department ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'
               }`}
-              placeholder="e.g. Computer Science"
-            />
+            >
+              <option value="">Select a department</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Electronics and Communication">Electronics and Communication</option>
+              <option value="Electrical and Electronics">Electrical and Electronics</option>
+              <option value="Mechanical">Mechanical</option>
+              <option value="Civil">Civil</option>
+              <option value="Biology">Biology</option>
+            </select>
             {errors.department && <p className="mt-1 text-sm text-error">{errors.department.message}</p>}
           </div>
 

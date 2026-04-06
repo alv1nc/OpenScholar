@@ -19,8 +19,9 @@ export class PapersController {
   static async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query.q as string;
+      const searchBy = req.query.searchBy as string;
       if (query) {
-        const papers = await PapersService.search(query);
+        const papers = await PapersService.search(query, searchBy);
         return res.status(200).json({ papers });
       } else {
         const papers = await PapersService.getRecent();

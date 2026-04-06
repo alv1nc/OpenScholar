@@ -10,7 +10,6 @@ import { Search, MessageSquare, User, LogOut, ChevronDown } from 'lucide-react';
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
@@ -28,13 +27,6 @@ export function Navbar() {
     return () => clearInterval(intervalId);
   }, [isAuthenticated]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
   if (!isAuthenticated) return null; // Only show on authenticated routes
 
   return (
@@ -50,30 +42,20 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-lg mx-8 hidden sm:block">
-            <form onSubmit={handleSearch} className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search papers, authors, departments..."
-                className="block w-full pl-10 pr-3 py-2 border border-border rounded-md leading-5 bg-muted text-foreground placeholder-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </form>
-          </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 ml-auto">
             
+            {/* Search */}
+            <Link href="/search" className="group relative flex items-center justify-center w-9 h-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200">
+              <Search className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
+            </Link>
+
             {/* Messages */}
-            <Link href="/messages" className="relative text-muted-foreground hover:text-foreground transition-colors">
-              <MessageSquare className="h-6 w-6" />
+            <Link href="/messages" className="group relative flex items-center justify-center w-9 h-9 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200">
+              <MessageSquare className="h-5 w-5 transition-transform duration-200 group-hover:scale-110" />
               {unreadMessagesCount > 0 && (
-                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-error rounded-full">
+                <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-error rounded-full">
                   {unreadMessagesCount}
                 </span>
               )}
@@ -83,13 +65,13 @@ export function Navbar() {
             <div className="relative">
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 text-sm focus:outline-none"
+                className="group flex items-center gap-2 text-sm focus:outline-none"
               >
-                <div className="h-8 w-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center text-primary font-medium">
+                <div className="h-8 w-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center text-primary font-medium transition-all duration-200 group-hover:bg-primary/30 group-hover:border-primary group-hover:scale-105 group-hover:shadow-md">
                   {user?.name?.charAt(0) || 'U'}
                 </div>
-                <span className="hidden md:block text-muted-foreground font-medium">{user?.name}</span>
-                <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />
+                <span className="hidden md:block text-muted-foreground font-medium group-hover:text-foreground transition-colors duration-200">{user?.name}</span>
+                <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block transition-transform duration-200 group-hover:text-foreground group-hover:rotate-180" />
               </button>
 
               {isDropdownOpen && (

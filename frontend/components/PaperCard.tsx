@@ -20,7 +20,7 @@ export function PaperCard({ paper }: PaperCardProps) {
   return (
     <Link 
       href={`/papers/${paper.id}`}
-      className="block group bg-white border border-border rounded-xl p-6 transition-all hover:bg-zinc-50 hover:border-primary/50 relative"
+      className="block group bg-white border border-border rounded-xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:bg-zinc-50 hover:border-primary/50 relative"
     >
       <div className="flex justify-between items-start gap-4">
         <div className="space-y-3 flex-1">

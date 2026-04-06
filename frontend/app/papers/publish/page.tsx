@@ -161,7 +161,15 @@ export default function PublishPaperPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">Department</label>
-              <input type="text" {...register('department')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.department ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`} />
+              <select {...register('department')} className={`w-full bg-background border rounded-md py-2 px-3 text-foreground focus:outline-none focus:ring-1 ${errors.department ? 'border-error focus:ring-error' : 'border-border focus:ring-primary'}`}>
+                <option value="">Select a department</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Electronics and Communication">Electronics and Communication</option>
+                <option value="Electrical and Electronics">Electrical and Electronics</option>
+                <option value="Mechanical">Mechanical</option>
+                <option value="Civil">Civil</option>
+                <option value="Biology">Biology</option>
+              </select>
               {errors.department && <p className="mt-1 text-sm text-error">{errors.department.message}</p>}
             </div>
             <div className="grid grid-cols-2 gap-2">
