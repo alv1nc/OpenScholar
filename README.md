@@ -9,7 +9,7 @@ A localized, institute-centric academic research platform where university membe
 - **Repository Publishing:** Readily upload `.pdf` papers connected to specific departments.
 - **Interactive Discussion Engine:** Users can ask questions, provide feedback, and start nested conversation threads on specific papers.
 - **Direct Messaging:** Peer-to-peer and faculty messaging mapped to unique connections.
-- **Dark Mode Aesthetics:** A premium, professional interface constructed without harsh UI paradigms, specifically tailored for academia.
+-  A premium, professional interface constructed without harsh UI paradigms, specifically tailored for academia.
 
 ## Architecture
 
