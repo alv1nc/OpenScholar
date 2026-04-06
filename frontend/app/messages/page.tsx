@@ -16,6 +16,7 @@ interface Conversation {
   participants: Participant[];
   lastMessage: string;
   updatedAt: string;
+  unreadCount?: number;
 }
 
 interface Message {
@@ -214,12 +215,22 @@ function MessagesContent() {
                       <UserIcon className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className={`text-sm font-medium truncate ${isActive ? 'text-white' : 'text-zinc-300'}`}>
-                        {getOtherParticipantName(conv)}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate leading-relaxed">
-                        {conv.lastMessage}
-                      </p>
+                      <div className="flex justify-between items-baseline mb-1">
+                        <span className={`font-medium truncate ${conv.unreadCount && conv.unreadCount > 0 ? 'text-primary drop-shadow-sm' : (isActive ? 'text-white' : 'text-zinc-300')}`}>
+                          {getOtherParticipantName(conv)}
+                        </span>
+                        <span className={`text-xs ml-2 flex-shrink-0 ${conv.unreadCount && conv.unreadCount > 0 ? 'text-primary font-medium' : 'text-muted-foreground'}`}>
+                          {new Date(conv.updatedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <p className={`text-sm truncate leading-relaxed ${conv.unreadCount && conv.unreadCount > 0 ? 'text-white font-medium' : 'text-muted-foreground'}`}>
+                          {conv.lastMessage || 'No messages yet'}
+                        </p>
+                        {!!(conv.unreadCount && conv.unreadCount > 0) && (
+                          <span className="w-2.5 h-2.5 bg-primary rounded-full flex-shrink-0 mx-1"></span>
+                        )}
+                      </div>
                     </div>
                   </button>
                 );

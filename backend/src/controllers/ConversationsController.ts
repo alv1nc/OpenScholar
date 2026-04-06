@@ -13,6 +13,16 @@ export class ConversationsController {
     }
   }
 
+  static async getUnreadCount(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
+      const count = await ConversationsService.getGlobalUnreadCount(req.user.id);
+      res.status(200).json({ unreadCount: count });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async startChat(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { userId } = req.body;
@@ -27,8 +37,9 @@ export class ConversationsController {
 
   static async getMessages(req: AuthRequest, res: Response, next: NextFunction) {
     try {
+      if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
       const id = req.params.id as string;
-      const messages = await ConversationsService.getMessages(id);
+      const messages = await ConversationsService.getMessages(id, req.user.id);
       
       const mapped = messages.map((m: any) => ({
         id: m.id,

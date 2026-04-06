@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import api from '@/lib/api';
 import { Search, MessageSquare, User, LogOut, ChevronDown } from 'lucide-react';
 
 export function Navbar() {
@@ -11,7 +12,21 @@ export function Navbar() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const unreadMessagesCount = 3; // Mocked count for badge
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    
+    const fetchUnread = () => {
+      api.get('/conversations/unread-count')
+         .then(res => setUnreadMessagesCount(res.data.unreadCount || 0))
+         .catch(err => console.error("Unread sum network err:", err));
+    };
+
+    fetchUnread(); // Initial pull
+    const intervalId = setInterval(fetchUnread, 5000); // 5 sec live polling
+    return () => clearInterval(intervalId);
+  }, [isAuthenticated]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

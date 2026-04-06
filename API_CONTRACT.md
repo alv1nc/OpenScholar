@@ -232,13 +232,22 @@ The frontend uses short-polling (e.g. hitting `GET /messages` every 3 seconds) f
         ],
         "lastMessage": "Are we meeting tomorrow?",
         "updatedAt": "2024-04-04T10:00:00Z",
-        "unreadCount": 0
+        "unreadCount": 1
       }
     ]
   }
   ```
 
-### 2. Start / Fetch specific Conversation
+### 2. Get Global Unread Count
+- **Endpoint:** `GET /conversations/unread-count`
+- **Success Response (200 OK):**
+  ```json
+  {
+    "unreadCount": 3
+  }
+  ```
+
+### 3. Start / Fetch specific Conversation
 Used when clicking "Message" on someone's profile.
 - **Endpoint:** `POST /conversations`
 - **Request Body:** `{ "userId": "target_user_uuid" }`
@@ -252,8 +261,9 @@ Used when clicking "Message" on someone's profile.
   }
   ```
 
-### 3. Fetch Conversation Messages (Polling target)
+### 4. Fetch Conversation Messages (Polling target)
 - **Endpoint:** `GET /conversations/:id/messages`
+- **Side Effect:** Automatically sets `isRead = true` in PostgreSQL for all retrieved messages targeting the requesting user!
 - **Success Response (200 OK):** Sorted chronologically (oldest to newest).
   ```json
   {
