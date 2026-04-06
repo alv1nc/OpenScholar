@@ -16,6 +16,16 @@ export class PapersController {
     }
   }
 
+  static async getByUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = req.params.userId as string;
+      const papers = await PapersService.getByUser(userId);
+      res.status(200).json({ papers });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.query.q as string;

@@ -45,8 +45,8 @@ export default function ProfilePage() {
           setProfile(userRes.data.user);
         }
 
-        const res = await api.get('/papers/recent');
-        setUserPapers(res.data.papers.slice(0, 2));
+        const papersRes = await api.get(`/papers/by-user/${id}`);
+        setUserPapers(papersRes.data.papers || []);
       } catch (err) {
         console.error(err);
       } finally {

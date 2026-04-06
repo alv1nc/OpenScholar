@@ -26,6 +26,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/recent', PapersController.getRecent);
+router.get('/by-user/:userId', PapersController.getByUser);
 router.get('/', PapersController.getAll);
 router.get('/:id', PapersController.getById);
 router.get('/:id/pdf', PapersController.getPdf);
